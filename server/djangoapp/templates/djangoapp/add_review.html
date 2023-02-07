@@ -1,16 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% load static %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+{% extends 'djangoapp/base.html' %}
 
-</head>
-    <body>
-    <!--Add review form here -->
-    </body>
-</html>
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block content %}
+
+    <div >
+        <h3 style="display: inline;">Add a review about </h3>
+        <h2 style="display: inline;"><b>{{dealer.full_name}}</b></h2>
+    </div>
+    <br>
+    <!--review form -->
+    <form action="/djangoapp/dealer/{{dealer.id}}/add-review/" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="content"><b>Enter the review content:</b></label>
+            <textarea class="form-control" id="content" name="content" rows="2" required></textarea>
+        </div>
+        <div class="form-group form-check">
+            <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck">
+            <label for="purchasecheck">Has purchased the car from {{dealer.full_name}}?
+            <span style="color: grey"> (select purchased car information below if checked)</span>
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="car">Select your car (model-make-year):</label>
+            <select name="car" id="car" class="form-select">
+                {% for car in cars %}
+                <option selected value={{car.id}}>{{car.car_make.name}}-{{car.name}}-{{ car.year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group" data-provide="datepicker">
+            <label for="purchasedate">Select your purchase date:</label>
+            <input class="date-own form-control" type="text" name="purchasedate" id="purchasedate">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock content %}
+
+{% block js_script %}
+<script type="text/javascript">
+        $('.date-own').datepicker({
+           format: 'mm/dd/yyyy'
+         });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock js_script %}
